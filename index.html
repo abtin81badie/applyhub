@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="ApplyHub: track study-abroad applications, collaborate in rooms, and read community-verified country guides." />
+    <meta name="theme-color" content="#4f46e5" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>ApplyHub</title>
+    <script>
+      // GitHub Pages SPA fallback: restore the URL encoded by 404.html (see vite-plugins/spa-fallback.ts).
+      (function (l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search
+            .slice(1)
+            .split('&')
+            .map(function (s) {
+              return s.replace(/~and~/g, '&');
+            })
+            .join('?');
+          window.history.replaceState(null, '', l.pathname.slice(0, -1) + decoded + l.hash);
+        }
+      })(window.location);
+      // Apply saved language direction and theme before first paint to avoid a flash.
+      (function () {
+        try {
+          var lang = localStorage.getItem('applyhub.locale');
+          if (lang === 'en' || lang === 'fa') {
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+          }
+          var theme = localStorage.getItem('applyhub.theme');
+          var dark =
+            theme === 'dark' ||
+            ((theme === null || theme === 'system') &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (dark) document.documentElement.classList.add('dark');
+        } catch (_) {
+          /* storage unavailable: keep defaults */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>ApplyHub needs JavaScript. / برای استفاده از ApplyHub جاوااسکریپت را فعال کنید.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+dist
+node_modules
+coverage
+supabase/.temp
+package-lock.json
+src/lib/database.types.ts
+supabase
+docs
+*.md
+.local

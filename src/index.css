@@ -1,0 +1,193 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/vazirmatn';
+
+/* Dark mode is class-based so the user can override the OS preference. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Semantic color tokens. Components only use these names (bg-surface,
+ * text-muted, border-border, bg-primary, …) so light/dark switching is a
+ * matter of redefining the variables below.
+ */
+:root {
+  --bg: #f6f7fb;
+  --surface: #ffffff;
+  --surface-2: #f1f3f9;
+  --surface-3: #e7eaf3;
+  --border: #dde1ec;
+  --fg: #111827;
+  --muted: #5b6477;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-fg: #ffffff;
+  --primary-soft: #eef0ff;
+  --ring: #6366f1;
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+  --warning: #b45309;
+  --warning-soft: #fffbeb;
+  --success: #15803d;
+  --success-soft: #f0fdf4;
+  --info: #0369a1;
+  --info-soft: #f0f9ff;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0b0f19;
+  --surface: #121826;
+  --surface-2: #182033;
+  --surface-3: #212b42;
+  --border: #283350;
+  --fg: #e8ebf3;
+  --muted: #9aa4bb;
+  --primary: #818cf8;
+  --primary-hover: #a5b4fc;
+  --primary-fg: #0b0f19;
+  --primary-soft: #1e2347;
+  --ring: #818cf8;
+  --danger: #f87171;
+  --danger-soft: #2a1515;
+  --warning: #fbbf24;
+  --warning-soft: #2a2210;
+  --success: #4ade80;
+  --success-soft: #0f2618;
+  --info: #38bdf8;
+  --info-soft: #0c2230;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-soft: var(--primary-soft);
+  --color-ring: var(--ring);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+}
+
+@theme {
+  --font-sans:
+    'Vazirmatn Variable', Vazirmatn, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-bg text-fg font-sans antialiased;
+    min-height: 100dvh;
+  }
+
+  /* Persian text reads better with slightly more line height. */
+  html[lang='fa'] body {
+    line-height: 1.75;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--primary) 30%, transparent);
+  }
+
+  /* LTR islands inside RTL text: URLs, codes, e-mails, numbers typed by users. */
+  .ltr-island {
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+
+  dialog::backdrop {
+    background: rgb(0 0 0 / 0.45);
+    backdrop-filter: blur(2px);
+  }
+}
+
+@layer components {
+  /* Markdown content rendered by <Markdown />. */
+  .prose-app {
+    @apply text-[0.95rem] leading-7 break-words;
+  }
+  .prose-app h1 {
+    @apply mt-4 mb-2 text-xl font-bold;
+  }
+  .prose-app h2 {
+    @apply mt-4 mb-2 text-lg font-bold;
+  }
+  .prose-app h3,
+  .prose-app h4 {
+    @apply mt-3 mb-1 text-base font-semibold;
+  }
+  .prose-app p {
+    @apply my-2;
+  }
+  .prose-app ul {
+    @apply my-2 list-disc ps-6;
+  }
+  .prose-app ol {
+    @apply my-2 list-decimal ps-6;
+  }
+  .prose-app li {
+    @apply my-0.5;
+  }
+  .prose-app a {
+    @apply text-primary underline underline-offset-2 hover:text-primary-hover;
+  }
+  .prose-app blockquote {
+    @apply my-3 border-s-4 border-border ps-3 text-muted;
+  }
+  .prose-app code {
+    @apply rounded bg-surface-2 px-1 py-0.5 font-mono text-[0.85em];
+  }
+  .prose-app pre {
+    @apply my-3 overflow-x-auto rounded-lg bg-surface-2 p-3;
+    direction: ltr;
+  }
+  .prose-app pre code {
+    @apply bg-transparent p-0;
+  }
+  .prose-app table {
+    @apply my-3 w-full border-collapse text-sm;
+  }
+  .prose-app th,
+  .prose-app td {
+    @apply border border-border px-2 py-1 text-start;
+  }
+  .prose-app hr {
+    @apply my-4 border-border;
+  }
+  .prose-app img {
+    @apply max-w-full rounded;
+  }
+}
+
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+/* Mixed Persian/English user content: each block picks its own direction. */
+.prose-app :is(p, li, h1, h2, h3, h4, blockquote, td, th) {
+  unicode-bidi: plaintext;
+  text-align: start;
+}
