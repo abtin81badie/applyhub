@@ -1,14 +1,16 @@
 import type { ComponentType } from 'react';
-import { createBrowserRouter, Outlet, ScrollRestoration } from 'react-router';
+import { createBrowserRouter, Outlet, ScrollRestoration, type RouteObject } from 'react-router';
 import { AppShell, AuthLayout } from '@/components/layout/AppShell';
 import { RedirectIfSignedIn, RequireAdmin, RequireAuth } from '@/features/auth/guards';
 import { BASE_PATH } from '@/lib/env';
 import NotFoundPage from '@/pages/NotFoundPage';
 import { RouteError } from '@/pages/RouteError';
 
+type Loader = () => Promise<{ default: ComponentType }>;
+
 /** Code-split route: the module's default export becomes the route component. */
-function page(load: () => Promise<{ default: ComponentType }>) {
-  return async () => ({ Component: (await load()).default });
+function route(path: string, load: Loader, children?: RouteObject[]): RouteObject {
+  return { path, lazy: async () => ({ Component: (await load()).default }), children };
 }
 
 function Root() {
@@ -19,6 +21,25 @@ function Root() {
     </>
   );
 }
+
+/** Pages that anyone can open. */
+const publicRoutes: RouteObject[] = [
+  { index: true, lazy: async () => ({ Component: (await import('@/pages/LandingPage')).default }) },
+];
+
+/** Pages for signed-in users (RequireAuth also sends new users to onboarding). */
+const protectedRoutes: RouteObject[] = [
+  route('onboarding', () => import('@/features/profile/OnboardingPage')),
+  route('profile', () => import('@/features/profile/ProfilePage')),
+  route('dashboard', () => import('@/features/dashboard/DashboardPage')),
+  route('applications', () => import('@/features/applications/ApplicationsPage')),
+  route('applications/new', () => import('@/features/applications/NewApplicationPage')),
+  route('applications/:id', () => import('@/features/applications/ApplicationDetailPage')),
+  route('applications/:id/edit', () => import('@/features/applications/EditApplicationPage')),
+];
+
+/** Admin screens (the database enforces the same rules). */
+const adminRoutes: RouteObject[] = [];
 
 export const router = createBrowserRouter(
   [
@@ -33,43 +54,23 @@ export const router = createBrowserRouter(
             {
               element: <RedirectIfSignedIn />,
               children: [
-                { path: 'login', lazy: page(() => import('@/features/auth/LoginPage')) },
-                { path: 'signup', lazy: page(() => import('@/features/auth/SignupPage')) },
-                {
-                  path: 'forgot-password',
-                  lazy: page(() => import('@/features/auth/ForgotPasswordPage')),
-                },
+                route('login', () => import('@/features/auth/LoginPage')),
+                route('signup', () => import('@/features/auth/SignupPage')),
+                route('forgot-password', () => import('@/features/auth/ForgotPasswordPage')),
               ],
             },
-            { path: 'auth/callback', lazy: page(() => import('@/features/auth/AuthCallbackPage')) },
-            {
-              path: 'auth/reset-password',
-              lazy: page(() => import('@/features/auth/ResetPasswordPage')),
-            },
+            route('auth/callback', () => import('@/features/auth/AuthCallbackPage')),
+            route('auth/reset-password', () => import('@/features/auth/ResetPasswordPage')),
           ],
         },
         {
           element: <AppShell />,
           errorElement: <RouteError />,
           children: [
-            { index: true, lazy: page(() => import('@/pages/LandingPage')) },
+            ...publicRoutes,
             {
               element: <RequireAuth />,
-              children: [
-                {
-                  path: 'onboarding',
-                  lazy: page(() => import('@/features/profile/OnboardingPage')),
-                },
-                { path: 'profile', lazy: page(() => import('@/features/profile/ProfilePage')) },
-                {
-                  path: 'dashboard',
-                  lazy: page(() => import('@/features/dashboard/DashboardPage')),
-                },
-                {
-                  element: <RequireAdmin />,
-                  children: [],
-                },
-              ],
+              children: [...protectedRoutes, { element: <RequireAdmin />, children: adminRoutes }],
             },
             { path: '*', element: <NotFoundPage /> },
           ],

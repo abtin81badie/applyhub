@@ -197,23 +197,3 @@ export function DateInput({
     </div>
   );
 }
-
-/** Combines an ISO date and optional "HH:MM" local time into a UTC ISO timestamp. */
-export function combineDateTime(date: string, time: string | null | undefined): string {
-  const [y, m, d] = date.split('-').map(Number);
-  const [hh, mm] = (time && /^\d{2}:\d{2}$/.test(time) ? time : '23:59').split(':').map(Number);
-  return new Date(y!, (m ?? 1) - 1, d ?? 1, hh ?? 23, mm ?? 59).toISOString();
-}
-
-/** Splits a timestamp into local ISO date and "HH:MM" parts for editing. */
-export function splitDateTime(value: string | null | undefined): {
-  date: string | null;
-  time: string;
-} {
-  const d = toDate(value);
-  if (!d) return { date: null, time: '23:59' };
-  return {
-    date: toIsoDate(d),
-    time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`,
-  };
-}

@@ -10,8 +10,10 @@ const schema = {
   protocols: {
     ...defaultSchema.protocols,
     href: ['http', 'https', 'mailto'],
+    src: ['http', 'https'],
   },
-  tagNames: (defaultSchema.tagNames ?? []).filter((tag) => !['img', 'input'].includes(tag)),
+  // <img> is kept so the renderer below can turn it into a plain link.
+  tagNames: (defaultSchema.tagNames ?? []).filter((tag) => tag !== 'input'),
 };
 
 export function safeUrlTransform(url: string): string {

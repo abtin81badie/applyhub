@@ -117,6 +117,26 @@ export function toIsoDate(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
+/** Combines an ISO date and an optional "HH:MM" local time into a UTC ISO timestamp (default 23:59). */
+export function combineIsoDate(date: string, time?: string | null): string {
+  const [y, m, d] = date.split('-').map(Number);
+  const [hh, mm] = (time && /^\d{2}:\d{2}$/.test(time) ? time : '23:59').split(':').map(Number);
+  return new Date(y!, (m ?? 1) - 1, d ?? 1, hh ?? 23, mm ?? 59).toISOString();
+}
+
+/** Splits a timestamp into local "YYYY-MM-DD" and "HH:MM" parts for editing. */
+export function splitIsoDateTime(value: string | null | undefined): {
+  date: string | null;
+  time: string;
+} {
+  const d = toDate(value);
+  if (!d) return { date: null, time: '23:59' };
+  return {
+    date: toIsoDate(d),
+    time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`,
+  };
+}
+
 export function isSameDay(a: Date, b: Date): boolean {
   return (
     a.getFullYear() === b.getFullYear() &&

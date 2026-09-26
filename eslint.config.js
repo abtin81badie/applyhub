@@ -46,7 +46,6 @@ export default defineConfig([
       'src/providers/**/*.tsx',
       'src/router.tsx',
       'src/components/ui/Button.tsx',
-      'src/components/common/DateInput.tsx',
       'src/components/common/Markdown.tsx',
     ],
     rules: { 'react-refresh/only-export-components': 'off' },

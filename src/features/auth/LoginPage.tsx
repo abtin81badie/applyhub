@@ -12,6 +12,7 @@ import { appUrl } from '@/lib/env';
 import { describeAuthError } from '@/lib/errors';
 import { rememberNext, safeNextPath } from '@/lib/navigation';
 import { supabase } from '@/lib/supabase';
+import { toAsciiDigits } from '@/lib/utils';
 import { AuthCard, Divider, OAuthButtons } from './components';
 
 type Method = 'email' | 'password';
@@ -65,7 +66,7 @@ export default function LoginPage() {
     setBusy(true);
     const { error: verifyError } = await supabase.auth.verifyOtp({
       email: sentTo,
-      token: code.replace(/\s/g, ''),
+      token: toAsciiDigits(code).replace(/\s/g, ''),
       type: 'email',
     });
     setBusy(false);
@@ -133,7 +134,6 @@ export default function LoginPage() {
                 id="otp-code"
                 inputMode="numeric"
                 autoComplete="one-time-code"
-                pattern="[0-9 ]{6,8}"
                 maxLength={8}
                 dir="ltr"
                 className="text-center text-lg tracking-[0.4em]"
@@ -141,7 +141,11 @@ export default function LoginPage() {
                 onChange={(e) => setCode(e.target.value)}
               />
             </Field>
-            <Button type="submit" loading={busy} disabled={code.replace(/\s/g, '').length < 6}>
+            <Button
+              type="submit"
+              loading={busy}
+              disabled={toAsciiDigits(code).replace(/\s/g, '').length < 6}
+            >
               {t('auth.login.verifyCode')}
             </Button>
           </form>

@@ -79,3 +79,12 @@ export function formatBytes(bytes: number, locale: string): string {
   );
   return `${n} ${units[unit]}`;
 }
+
+/** Converts Persian (۰-۹) and Arabic-Indic (٠-٩) digits to ASCII so numeric input works on any keyboard. */
+export function toAsciiDigits(value: string): string {
+  return value
+    .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 0x06f0))
+    .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 0x0660))
+    .replace(/[٫]/g, '.')
+    .replace(/[٬]/g, '');
+}
