@@ -60,9 +60,14 @@ scripts/local/     optional Docker-free local stack (Supabase Auth + PostgREST)
 The migrations also create the private storage bucket `room-files`, its
 policies, and the Realtime publication for `activity_log`.
 
-### Make a user an admin
+### Your admin account
 
-Run this in the SQL editor:
+**The first account that signs up in a fresh project automatically becomes an
+admin.** The repository contains no username or password. Open the deployed
+site, click **Sign up**, and register with your own email. That account is the
+admin.
+
+To make more users admins, run this in the SQL editor:
 
 ```sql
 update public.profiles set role = 'admin'
@@ -108,9 +113,14 @@ repository to that name, or push this code there.
 
 1. **Settings → Secrets and variables → Actions**: add `VITE_SUPABASE_URL` and
    `VITE_SUPABASE_ANON_KEY`.
-2. **Settings → Pages → Source**: choose **GitHub Actions**.
-3. Push to `main`. `.github/workflows/deploy.yml` then type-checks, lints,
-   tests, builds and deploys.
+2. **Settings → Pages → Source**: choose **GitHub Actions**. Until this is done
+   the workflow still builds and tests, then skips deployment with a warning.
+3. Push to `main`, or re-run the workflow from the **Actions** tab.
+   `.github/workflows/deploy.yml` type-checks, lints, tests, builds and deploys.
+
+Site addresses:
+- repository named `applyhub`: <https://abtin81badie.github.io/applyhub/>
+- repository renamed to `abtin81badie.github.io`: <https://abtin81badie.github.io/>
 
 The workflow reads the base path from `actions/configure-pages`. The same
 build therefore also works as a project site

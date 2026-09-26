@@ -22,6 +22,8 @@ db_setup
 
 log "Installing test helpers"
 run_psql -f "$TESTS_DIR/helpers.sql" >/dev/null
+# Tests create their own admins explicitly; 00_bootstrap_admin.sql re-enables the rule.
+run_psql -c "alter database $DB_NAME set applyhub.bootstrap_admin = 'off'" >/dev/null
 
 passed=0
 failed=0

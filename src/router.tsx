@@ -26,6 +26,21 @@ function Root() {
 const publicRoutes: RouteObject[] = [
   { index: true, lazy: async () => ({ Component: (await import('@/pages/LandingPage')).default }) },
   route('join/:code', () => import('@/features/rooms/JoinRoomPage')),
+  route('countries', () =>
+    import('@/features/kb/KbPages').then((m) => ({ default: m.CountriesPage })),
+  ),
+  route('countries/:code', () =>
+    import('@/features/kb/KbPages').then((m) => ({ default: m.CountryPage })),
+  ),
+  route('universities/:id', () =>
+    import('@/features/kb/KbPages').then((m) => ({ default: m.UniversityPage })),
+  ),
+  route('programs/:id', () =>
+    import('@/features/kb/KbPages').then((m) => ({ default: m.ProgramRedirect })),
+  ),
+  route('history/:entityType/:entityId', () =>
+    import('@/features/kb/KbPages').then((m) => ({ default: m.HistoryPage })),
+  ),
 ];
 
 /** Pages for signed-in users (RequireAuth also sends new users to onboarding). */
@@ -39,10 +54,21 @@ const protectedRoutes: RouteObject[] = [
   route('applications/:id/edit', () => import('@/features/applications/EditApplicationPage')),
   route('rooms', () => import('@/features/rooms/RoomsPage')),
   route('rooms/:roomId', () => import('@/features/rooms/RoomPage')),
+  route('contribute', () =>
+    import('@/features/moderation/ModerationPages').then((m) => ({ default: m.ContributionsPage })),
+  ),
+  route('contribute/new', () =>
+    import('@/features/moderation/ModerationPages').then((m) => ({ default: m.ProposePage })),
+  ),
+  route('data', () => import('@/features/data/DataPage')),
 ];
 
 /** Admin screens (the database enforces the same rules). */
-const adminRoutes: RouteObject[] = [];
+const adminRoutes: RouteObject[] = [
+  route('admin/moderation', () =>
+    import('@/features/moderation/ModerationPages').then((m) => ({ default: m.ModerationPage })),
+  ),
+];
 
 export const router = createBrowserRouter(
   [

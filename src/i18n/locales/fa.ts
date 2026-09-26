@@ -676,6 +676,18 @@ export const fa: TranslationShape = {
     unknown: '{{actor}} کاری انجام داد',
   },
   kb: {
+    linkCategory: {
+      admissions: 'پذیرش',
+      visa: 'ویزا',
+      scholarships: 'بورسیه',
+      language: 'زبان',
+      recognition: 'ارزشیابی مدرک',
+      living: 'زندگی',
+      other: 'سایر',
+    },
+    allFilters: 'همه',
+    placeholderNotice:
+      'بخشی از محتوای اینجا داده نمونه ساختگی است که علامت‌گذاری شده و اطلاعات واقعی نیست.',
     regions: {
       europe: 'اروپا',
       americas: 'آمریکا',

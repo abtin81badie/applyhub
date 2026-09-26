@@ -674,6 +674,18 @@ export const en = {
     unknown: '{{actor}} did something',
   },
   kb: {
+    linkCategory: {
+      admissions: 'Admissions',
+      visa: 'Visa',
+      scholarships: 'Scholarships',
+      language: 'Language',
+      recognition: 'Degree recognition',
+      living: 'Living',
+      other: 'Other',
+    },
+    allFilters: 'All',
+    placeholderNotice:
+      'Some content here is placeholder example data. It is labelled and not real information.',
     regions: {
       europe: 'Europe',
       americas: 'Americas',

@@ -79,8 +79,8 @@ function useInvalidateApplications() {
 
 export interface CreateApplicationInput {
   application: ApplicationInsert;
-  requirements?: { kind: RequirementKind; label: string }[];
-  deadlines?: { label: string; due_at: string }[];
+  requirements?: { kind: RequirementKind; label: string; is_done?: boolean }[];
+  deadlines?: { label: string; due_at: string; is_done?: boolean }[];
 }
 
 export function useCreateApplication() {
