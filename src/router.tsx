@@ -25,6 +25,7 @@ function Root() {
 /** Pages that anyone can open. */
 const publicRoutes: RouteObject[] = [
   { index: true, lazy: async () => ({ Component: (await import('@/pages/LandingPage')).default }) },
+  route('join/:code', () => import('@/features/rooms/JoinRoomPage')),
 ];
 
 /** Pages for signed-in users (RequireAuth also sends new users to onboarding). */
@@ -36,6 +37,8 @@ const protectedRoutes: RouteObject[] = [
   route('applications/new', () => import('@/features/applications/NewApplicationPage')),
   route('applications/:id', () => import('@/features/applications/ApplicationDetailPage')),
   route('applications/:id/edit', () => import('@/features/applications/EditApplicationPage')),
+  route('rooms', () => import('@/features/rooms/RoomsPage')),
+  route('rooms/:roomId', () => import('@/features/rooms/RoomPage')),
 ];
 
 /** Admin screens (the database enforces the same rules). */

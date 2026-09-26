@@ -1027,7 +1027,7 @@ export type Database = {
         Insert: {
           id?: string
           room_id: string
-          code: string
+          code?: string
           role?: Database["public"]["Enums"]["room_role"]
           created_by?: string | null
           expires_at?: string | null

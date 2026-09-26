@@ -98,15 +98,13 @@ export function useCreateApplication() {
         .single();
       if (error) throw error;
       if (requirements.length > 0) {
-        const { error: reqError } = await supabase
-          .from('application_requirements')
-          .insert(
-            requirements.map((r, index) => ({
-              ...r,
-              application_id: data.id,
-              sort_order: index + 1,
-            })),
-          );
+        const { error: reqError } = await supabase.from('application_requirements').insert(
+          requirements.map((r, index) => ({
+            ...r,
+            application_id: data.id,
+            sort_order: index + 1,
+          })),
+        );
         if (reqError) throw reqError;
       }
       if (deadlines.length > 0) {

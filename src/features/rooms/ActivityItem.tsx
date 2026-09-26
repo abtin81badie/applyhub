@@ -33,25 +33,17 @@ const KNOWN_ACTIONS = new Set([
   'file.deleted',
 ]);
 
-function entityLink(row: ActivityRow): string | null {
+function entityLink(row: ActivityRow): string {
   const base = `/rooms/${row.room_id}`;
-  switch (row.entity_type) {
-    case 'application':
-      return row.entity_id ? `${base}/applications?app=${row.entity_id}` : `${base}/applications`;
-    case 'note':
-      return row.action === 'note.deleted' || !row.entity_id
-        ? `${base}/notes`
-        : `${base}/notes/${row.entity_id}`;
-    case 'target':
-      return `${base}/targets`;
-    case 'attachment':
-      return `${base}/files`;
-    case 'member':
-    case 'invite':
-      return `${base}/members`;
-    default:
-      return base;
-  }
+  const tab: Record<string, string> = {
+    application: 'applications',
+    note: 'notes',
+    target: 'targets',
+    attachment: 'files',
+    member: 'members',
+    invite: 'members',
+  };
+  return row.entity_type && tab[row.entity_type] ? `${base}?tab=${tab[row.entity_type]}` : base;
 }
 
 /** One feed entry: "Sara shared TU Example — MSc", with avatar and time. */
@@ -91,13 +83,9 @@ export function ActivityItem({ row, showRoom = false }: { row: ActivityRow; show
         size="sm"
       />
       <div className="min-w-0 flex-1 text-sm">
-        {href ? (
-          <Link to={href} className="hover:text-primary" dir="auto">
-            {text}
-          </Link>
-        ) : (
-          <span dir="auto">{text}</span>
-        )}
+        <Link to={href} className="hover:text-primary" dir="auto">
+          {text}
+        </Link>
         {excerpt && (
           <p className="mt-0.5 line-clamp-2 text-xs text-muted" dir="auto">
             “{excerpt}”

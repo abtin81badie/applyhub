@@ -487,8 +487,8 @@ export const en = {
     joinPlaceholder: 'Invite code',
     joinSubmit: 'Join',
     empty: 'You are not in any rooms yet. Create one and invite your friends.',
-    members_one: '{{count, number}} member',
-    members_other: '{{count, number}} members',
+    memberCount_one: '{{count, number}} member',
+    memberCount_other: '{{count, number}} members',
     yourRole: 'Your role: {{role}}',
     form: {
       name: 'Room name',

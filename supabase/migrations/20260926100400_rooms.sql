@@ -17,6 +17,28 @@ create type public.target_interest as enum ('interested', 'applying', 'not_inter
 create type public.note_kind as enum ('note', 'link');
 
 -- -----------------------------------------------------------------------------
+-- Invite codes: 12 characters of Crockford base32 (60 random bits).
+-- -----------------------------------------------------------------------------
+create or replace function private.generate_invite_code()
+returns text
+language plpgsql volatile set search_path = ''
+as $$
+declare
+  alphabet constant text := '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+  -- Skip the UUID version byte (6); byte 8 still has 6 random low bits.
+  byte_idx constant int[] := array[0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14];
+  raw  bytea := uuid_send(gen_random_uuid());
+  i    int;
+  code text := '';
+begin
+  foreach i in array byte_idx loop
+    code := code || substr(alphabet, (get_byte(raw, i) % 32) + 1, 1);
+  end loop;
+  return code;
+end;
+$$;
+
+-- -----------------------------------------------------------------------------
 -- Tables
 -- -----------------------------------------------------------------------------
 create table public.rooms (
@@ -46,7 +68,7 @@ create index room_members_user_idx on public.room_members (user_id);
 create table public.room_invites (
   id         uuid primary key default gen_random_uuid(),
   room_id    uuid not null references public.rooms (id) on delete cascade,
-  code       text not null unique,
+  code       text not null unique default private.generate_invite_code(),
   role       public.room_role not null default 'editor' check (role <> 'owner'),
   created_by uuid default auth.uid() references public.profiles (id) on delete set null,
   expires_at timestamptz,
@@ -280,28 +302,6 @@ returns boolean
 language sql stable security definer set search_path = ''
 as $$
   select exists (select 1 from public.rooms where id = p_room_id);
-$$;
-
--- -----------------------------------------------------------------------------
--- Invite codes: 12 characters of Crockford base32 (60 random bits).
--- -----------------------------------------------------------------------------
-create or replace function private.generate_invite_code()
-returns text
-language plpgsql volatile set search_path = ''
-as $$
-declare
-  alphabet constant text := '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
-  -- Skip the UUID version byte (6); byte 8 still has 6 random low bits.
-  byte_idx constant int[] := array[0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14];
-  raw  bytea := uuid_send(gen_random_uuid());
-  i    int;
-  code text := '';
-begin
-  foreach i in array byte_idx loop
-    code := code || substr(alphabet, (get_byte(raw, i) % 32) + 1, 1);
-  end loop;
-  return code;
-end;
 $$;
 
 create or replace function private.normalize_invite_code(p_code text)

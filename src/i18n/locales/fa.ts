@@ -489,8 +489,8 @@ export const fa: TranslationShape = {
     joinPlaceholder: 'کد دعوت',
     joinSubmit: 'پیوستن',
     empty: 'هنوز عضو هیچ اتاقی نیستید. یک اتاق بسازید و دوستانتان را دعوت کنید.',
-    members_one: '{{count, number}} عضو',
-    members_other: '{{count, number}} عضو',
+    memberCount_one: '{{count, number}} عضو',
+    memberCount_other: '{{count, number}} عضو',
     yourRole: 'نقش شما: {{role}}',
     form: {
       name: 'نام اتاق',
