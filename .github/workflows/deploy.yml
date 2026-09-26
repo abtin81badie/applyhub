@@ -17,6 +17,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # Secrets cannot be used in `if:` directly; expose whether they are set.
+      HAS_SUPABASE_SECRETS: ${{ secrets.VITE_SUPABASE_URL != '' && secrets.VITE_SUPABASE_ANON_KEY != '' }}
     outputs:
       pages_enabled: ${{ steps.pages.outputs.enabled }}
     steps:
@@ -53,10 +56,7 @@ jobs:
           fi
 
       - name: Warn about missing Supabase secrets
-        if: ${{ env.VITE_SUPABASE_URL == '' || env.VITE_SUPABASE_ANON_KEY == '' }}
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        if: env.HAS_SUPABASE_SECRETS != 'true'
         run: echo "::warning title=Supabase secrets missing::Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Settings → Secrets and variables → Actions. Until then the site shows a setup screen."
 
       - name: Build
